@@ -14,36 +14,83 @@
      * a color values
      * [optional] a depth value
    - finally, depending on the depth value, and resulting color is drawn into the framebuffer
---!>
+-->
 
 <!--
   The code in helpers.js abstracts most of the pipeline setup, allowing you to focus on:
    - defining attributes
    - writing a vertex shader
    - writing a fragment shader
---!>
+-->
 
-<!-- Attribute Generator --!>
+<!-- Attribute Generator -->
 <script>
 function makeAttributes() {
-	return {};
+	var Angles = 16;
+	var aPosition = [];
+	var aColor = [];
+
+	var r = 0.5;
+
+	for (var a = 0; a <= Angles; ++a) {
+		var ang = a / Angles * 2.0 * Math.PI;
+		aPosition.push( r * Math.cos(ang), -1.0, r * Math.sin(ang) );
+		aPosition.push( r * Math.cos(ang),  1.0, r * Math.sin(ang) );
+
+		aColor.push( 0.0, 0.5, a / Angles);
+		aColor.push( 1.0, 0.5, a / Angles);
+	}
+
+	aPosition = new Float32Array(aPosition);
+	aPosition.size = 3;
+
+	aColor = new Float32Array(aColor);
+	aColor.size = 3;
+
+	return {aPosition:aPosition, aColor:aColor};
 }
 function makeUniforms() {
-	return {};
+	var angle = (2.0 * Math.PI) * (time / 6.0);
+	var offset = {x:Math.sin(1.0 * time), y:Math.sin(0.5 * time)};
+
+	var xDir = {
+		x:Math.cos(angle), y:Math.sin(angle)
+	};
+	var yDir = {
+		x:-xDir.y,
+		y:xDir.x
+	};
+	var uMat = new Float32Array([
+		xDir.x, xDir.y, 0.0, 0.0,
+		yDir.x, yDir.y, 0.0, 0.0,
+		   0.0,    -1.0, 1.0, 0.0,
+		   offset.x, offset.y, 0.0, 1.0
+	]);
+	return {uMat:uMat};
 }
 </script>
 
-<!-- Vertex Shader --!>
+<!-- Vertex Shader -->
 <script type="x-shader/x-glsl-vertex" id="vertexShader">
+attribute vec4 aPosition;
+attribute vec4 aColor;
+
+uniform mat4 uMat;
+
+varying vec4 vColor;
+
 void main() {
-	gl_Position = /* TODO */;
+	vColor = aColor;
+	gl_Position = uMat * aPosition;
 }
 </script>
 
-<!-- Fragment Shader --!>
+<!-- Fragment Shader -->
 <script type="x-shader/x-glsl-fragment" id="fragmentShader">
+varying lowp vec4 vColor;
+
 void main() {
-	gl_FragColor = /* TODO */;
+	gl_FragColor = vColor;
 }
 </script>
 
