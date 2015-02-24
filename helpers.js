@@ -26,7 +26,7 @@ function compileScript(script) {
 	gl.shaderSource(shader, source);
 	gl.compileShader(shader);
 	if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-		throw new Error("Failed to compile shader " + script.id + ": " + gl.getShaderInfoLog(vs));
+		throw new Error("Failed to compile shader " + script.id + ": " + gl.getShaderInfoLog(shader));
 	}
 	return shader;
 }
