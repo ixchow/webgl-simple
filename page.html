@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+<title>Simple WebGL Application</title>
+<!--
+  WebGL works as a pipeline:
+   - buffers of 'attributes' (from 1-4 values per) are passed to the graphics card
+   - constant values ('uniforms') are also specified
+   - the graphics card runs these attributes through a 'vertex shader' program to produce:
+     * a location in the [-1,1]^3 cube
+	 * some 'varying' values (1-4 values per)
+   - the locations are connected into primitives (e.g. triangles), and the varying values are interpolated to sampling locations within each primitive
+   - for each of these sampling locations ('fragments') a 'fragment shader' program is run to produce:
+     * a color values
+     * [optional] a depth value
+   - finally, depending on the depth value, and resulting color is drawn into the framebuffer
+--!>
+
+<!--
+  The code in helpers.js abstracts most of the pipeline setup, allowing you to focus on:
+   - defining attributes
+   - writing a vertex shader
+   - writing a fragment shader
+--!>
+
+<!-- Attribute Generator --!>
+<script>
+function makeAttributes() {
+	var aPosition = new Float32Array([
+		0.0, 0.0, 0.0, 1.0,
+		0.0, 1.0, 0.0, 1.0,
+		1.0, 0.0, 0.0, 1.0,
+		1.0, 1.0, 0.0, 1.0
+	]);
+	aPosition.size = 4;
+
+	var aColor = new Float32Array([
+		1.0, 0.0, 0.0, 1.0,
+		0.0, 1.0, 0.0, 1.0,
+		0.0, 0.0, 0.0, 1.0,
+		1.0, 1.0, 1.0, 1.0
+	]);
+	aColor.size = 4;
+
+	return {aPosition:aPosition, aColor:aColor};
+}
+function makeUniforms() {
+	var uTint = new Float32Array([1.0, 1.0, 1.0, 1.0]);
+	var right = {
+		x:Math.cos(window.time),
+		y:Math.sin(window.time)
+	};
+	var uMat = new Float32Array([
+		right.x, -right.y,
+		right.y,  right.x,
+	]);
+
+	return {uTint:uTint, uMat:uMat};
+}
+</script>
+
+<!-- Vertex Shader --!>
+<script type="x-shader/x-glsl-vertex" id="vertexShader">
+uniform vec4 uTint;
+uniform mat2 uMat;
+
+attribute vec4 aPosition;
+attribute vec4 aColor;
+
+varying vec4 vColor;
+
+void main() {
+	vColor = uTint * aColor;
+	gl_Position = vec4(uMat * aPosition.xy, aPosition.z, aPosition.w);
+}
+</script>
+
+<!-- Fragment Shader --!>
+<script type="x-shader/x-glsl-fragment" id="fragmentShader">
+varying lowp vec4 vColor;
+
+void main() {
+	gl_FragColor = vColor;
+}
+</script>
+
+<script src="helpers.js" ></script>
+</head>
+<body onload="init()">
+<canvas width="500" height="500"></canvas>
+</body>
+</html>
