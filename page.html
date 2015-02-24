@@ -80,6 +80,19 @@ function lookAt(eye, target, up) {
 	]);
 	
 }
+function mul(A, B) {
+	var out = new Float32Array(16);
+	for (var r = 0; r < 4; ++r) {
+		for (var c = 0; c < 4; ++c) {
+			var val = 0.0;
+			for (var k = 0; k < 4; ++k) {
+				val += A[k * 4 + r] * B[c * 4 + k];
+			}
+			out[4 * c + r] = val;
+		}
+	}
+	return out;
+}
 function makeUniforms() {
 	var angle = (2.0 * Math.PI) * (time / 6.0);
 
@@ -89,6 +102,12 @@ function makeUniforms() {
 
 
 	var uMat = lookAt(eye, target, up);
+	uMat = mul(new Float32Array([
+		1.0, 0.0, 0.0, 0.0,
+		0.0, 1.0, 0.0, 0.0,
+		0.0, 0.0,-0.1, 0.0,
+		0.0, 0.0, 0.0, 1.0
+	]), uMat);
 	return {uMat:uMat};
 }
 </script>
