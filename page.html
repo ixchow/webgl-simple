@@ -26,61 +26,24 @@
 <!-- Attribute Generator --!>
 <script>
 function makeAttributes() {
-	var aPosition = new Float32Array([
-		0.0, 0.0, 0.0, 1.0,
-		0.0, 1.0, 0.0, 1.0,
-		1.0, 0.0, 0.0, 1.0,
-		1.0, 1.0, 0.0, 1.0
-	]);
-	aPosition.size = 4;
-
-	var aColor = new Float32Array([
-		1.0, 0.0, 0.0, 1.0,
-		0.0, 1.0, 0.0, 1.0,
-		0.0, 0.0, 0.0, 1.0,
-		1.0, 1.0, 1.0, 1.0
-	]);
-	aColor.size = 4;
-
-	return {aPosition:aPosition, aColor:aColor};
+	return {};
 }
 function makeUniforms() {
-	var uTint = new Float32Array([1.0, 1.0, 1.0, 1.0]);
-	var right = {
-		x:Math.cos(window.time),
-		y:Math.sin(window.time)
-	};
-	var uMat = new Float32Array([
-		right.x, -right.y,
-		right.y,  right.x,
-	]);
-
-	return {uTint:uTint, uMat:uMat};
+	return {};
 }
 </script>
 
 <!-- Vertex Shader --!>
 <script type="x-shader/x-glsl-vertex" id="vertexShader">
-uniform vec4 uTint;
-uniform mat2 uMat;
-
-attribute vec4 aPosition;
-attribute vec4 aColor;
-
-varying vec4 vColor;
-
 void main() {
-	vColor = uTint * aColor;
-	gl_Position = vec4(uMat * aPosition.xy, aPosition.z, aPosition.w);
+	gl_Position = /* TODO */;
 }
 </script>
 
 <!-- Fragment Shader --!>
 <script type="x-shader/x-glsl-fragment" id="fragmentShader">
-varying lowp vec4 vColor;
-
 void main() {
-	gl_FragColor = vColor;
+	gl_FragColor = /* TODO */;
 }
 </script>
 
