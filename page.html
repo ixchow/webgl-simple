@@ -68,7 +68,7 @@ function lookAt(eye, target, up) {
 	var proj = dot(up, out);
 	up = normalize({ x:up.x - proj * out.x, y:up.y - proj * out.y, z:up.z - proj * out.z });
 
-	var right = cross(out, up);
+	var right = cross(up,out);
 
 	var offset = { x: -dot(eye, right), y: -dot(eye, up), z: -dot(eye, out) };
 
